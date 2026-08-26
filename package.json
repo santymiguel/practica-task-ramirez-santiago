@@ -1,0 +1,30 @@
+{
+  "name": "practica-tasks-ramirez-santiago",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/santymiguel/practica-task-ramirez-santiago.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/santymiguel/practica-task-ramirez-santiago/issues"
+  },
+  "homepage": "https://github.com/santymiguel/practica-task-ramirez-santiago#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.24.2",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
