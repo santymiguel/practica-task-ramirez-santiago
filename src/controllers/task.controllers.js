@@ -65,12 +65,10 @@ export async function editarTarea(req, res) {
       where: { title: tituloNormalizado, id: { [Op.ne]: Id } },
     });
     if (tareaExistente) {
-      return res
-        .status(400)
-        .json({
-          ok: false,
-          message: "Ya exite una tarea registrada con ese titulo",
-        });
+      return res.status(400).json({
+        ok: false,
+        message: "Ya exite una tarea registrada con ese titulo",
+      });
     }
     if (
       typeof description !== "string" ||
@@ -103,6 +101,33 @@ export async function editarTarea(req, res) {
       ok: false,
       status: 500,
       message: "error al querer editar la tarea",
+      error: err.message,
+    });
+  }
+}
+
+export async function borrarTarea(req, res) {
+  try {
+    const Id = req.params.id;
+    const tarea = await TasksModel.findOne({ where: { id: Id } });
+    if (!tarea) {
+      return res.status(404).json({
+        ok: false,
+        status: 404,
+        message: "tarea no encontrada",
+      });
+    }
+    await TasksModel.destroy({ where: { id: Id } });
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      message: "tarea eliminada satisfactoriamente",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      status: 500,
+      message: "error al querer eliminar la tarea",
       error: err.message,
     });
   }
