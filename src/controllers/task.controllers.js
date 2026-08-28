@@ -109,6 +109,13 @@ export async function editarTarea(req, res) {
 export async function borrarTarea(req, res) {
   try {
     const Id = req.params.id;
+    if (!Number.isInteger(Id) || Id <= 0) {
+      return res.status(400).json({
+        ok: false,
+        status: 400,
+        message: "La id ingresada debe ser un número entero positivo",
+      });
+    }
     const tarea = await TasksModel.findOne({ where: { id: Id } });
     if (!tarea) {
       return res.status(404).json({
