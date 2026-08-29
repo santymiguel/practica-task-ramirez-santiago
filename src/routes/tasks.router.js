@@ -1,7 +1,7 @@
 import express from "express";
 import {
-  crearTarea,
-  obtenerTarea,
+  borrarTarea,
+  editarTarea,
   obtenerTareas,
 } from "../controllers/task.controllers.js";
 
@@ -9,10 +9,6 @@ export const taskRouter = express.Router();
 
 taskRouter.get("/", obtenerTareas);
 
-taskRouter.get("/:id", obtenerTarea);
+taskRouter.put("/:id", editarTarea);
 
-taskRouter.post("/", crearTarea);
-
-taskRouter.put("/:id");
-
-taskRouter.delete("/:id");
+taskRouter.delete("/:id", borrarTarea);
