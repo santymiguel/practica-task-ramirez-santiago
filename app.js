@@ -1,5 +1,6 @@
 import express from "express";
 import { testConexion } from "./src/config/database.js";
+import "dotenv/config";
 import { UsersModel } from "./src/models/users.models.js";
 import { TasksModel } from "./src/models/tasks.models.js";
 import { taskRouter } from "./src/routes/tasks.router.js";
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRoutes);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, async () => {
   await testConexion();
   await UsersModel.sync();

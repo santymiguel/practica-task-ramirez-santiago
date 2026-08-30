@@ -1,9 +1,14 @@
 import { Sequelize } from "sequelize";
 
-export const sequelize = new Sequelize("tasks_users_db", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-});
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USERS,
+  process.env.DB_PASSWORRD,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  },
+);
 
 export async function testConexion() {
   try {
