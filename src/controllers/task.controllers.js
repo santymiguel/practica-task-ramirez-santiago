@@ -37,6 +37,60 @@ export async function obtenerTarea(req, res) {
   }
 }
 
+export async function crearTarea(req, res) {
+  try {
+    const { title, description, isComplete } = req.body;
+    if (
+      typeof title !== "string" ||
+      title.trim() === "" ||
+      title.length > 100
+    ) {
+      return res.status(400).json({
+        message:
+          "El titulo debe ser una cadena de texto de no mas de 100 caracteres ",
+      });
+    }
+    const tituloNormalizado = title.trim();
+    const tareaExistente = await TasksModel.findOne({
+      where: { title: tituloNormalizado },
+    });
+    if (tareaExistente) {
+      return res.status(400).json({
+        ok: false,
+        message: "Ya existe una tarea registrada con ese titulo",
+      });
+    }
+    if (
+      typeof description !== "string" ||
+      description.trim() === "" ||
+      description.length > 100
+    ) {
+      return res.status(400).json({
+        message:
+          "La descripcion debe ser una cadena de texto de no mas de 100 caracteres ",
+      });
+    }
+    if (typeof isComplete !== "boolean") {
+      return res.status(400).json({
+        message: "isComplete debe ser un valor booleano",
+      });
+    }
+    const tareaNueva = await TasksModel.create({
+      title: tituloNormalizado,
+      description,
+      isComplete,
+    });
+    return res.status(201).json({ ok: true, status: 201, body: tareaNueva });
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      status: 500,
+      message: "error al querer crear la tarea",
+      error: err.message,
+    });
+  }
+}
+
 export async function editarTarea(req, res) {
   try {
     const Id = req.params.id;
@@ -57,7 +111,7 @@ export async function editarTarea(req, res) {
     ) {
       return res.status(400).json({
         message:
-          "El nuevo titulo debe ser una cadena de texto de no mas de 100 caracteres ",
+          "El nuevo titulo debe ser una cadena de texto no vacia de no mas de 100 caracteres ",
       });
     }
     const tituloNormalizado = title.trim();
@@ -77,7 +131,7 @@ export async function editarTarea(req, res) {
     ) {
       return res.status(400).json({
         message:
-          "La nueva descripcion debe ser una cadena de texto de no mas de 100 caracteres ",
+          "La nueva descripcion debe ser una cadena de texto no vacia de no mas de 100 caracteres ",
       });
     }
     if (typeof isComplete !== "boolean") {
@@ -108,7 +162,7 @@ export async function editarTarea(req, res) {
 
 export async function borrarTarea(req, res) {
   try {
-    const Id = req.params.id;
+    const Id = Number(req.params.id);
     if (!Number.isInteger(Id) || Id <= 0) {
       return res.status(400).json({
         ok: false,

@@ -1,5 +1,8 @@
 import express from "express";
 import {
+  borrarUsuario,
+  crearUsuario,
+  editarUsuario,
   obtenerUsuario,
   obtenerUsuarios,
 } from "../controllers/users.controllers.js";
@@ -10,4 +13,8 @@ userRoutes.get("/", obtenerUsuarios);
 
 userRoutes.get("/:id", obtenerUsuario);
 
-userRoutes.put("/:id");
+userRoutes.post("/", crearUsuario);
+
+userRoutes.put("/", editarUsuario);
+
+userRoutes.delete("/:id", borrarUsuario);
