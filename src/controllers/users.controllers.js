@@ -1,9 +1,10 @@
+import { TasksModel } from "../models/tasks.models.js";
 import { UsersModel } from "../models/users.models.js";
 import { Op, where } from "sequelize";
 
 export async function obtenerUsuarios(req, res) {
   try {
-    const usuarios = await UsersModel.findAll();
+    const usuarios = await UsersModel.findAll({ include: TasksModel });
     res.status(200).json({ ok: true, status: 200, body: usuarios });
   } catch (err) {
     return res.status(500).json({
@@ -17,13 +18,13 @@ export async function obtenerUsuarios(req, res) {
 
 export async function obtenerUsuario(req, res) {
   try {
-    const Id = req.params.id;
-    if (isNaN(Id)) {
+    const id = req.params.id;
+    if (isNaN(id)) {
       return res
         .status(400)
         .json({ message: "La id ingresada debe ser un numero valido" });
     }
-    const usuario = await UsersModel.findOne({ where: { id: Id } });
+    const usuario = await UsersModel.findByPk(id, { include: TasksModel });
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }

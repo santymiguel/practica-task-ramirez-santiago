@@ -1,9 +1,10 @@
 import { TasksModel } from "../models/tasks.models.js";
 import { Op } from "sequelize";
+import { UsersModel } from "../models/users.models.js";
 
 export async function obtenerTareas(req, res) {
   try {
-    const tareas = await TasksModel.findAll();
+    const tareas = await TasksModel.findAll({ include: UsersModel });
     return res.status(200).json({ ok: true, status: 200, body: tareas });
   } catch (err) {
     return res.status(500).json({
@@ -17,13 +18,13 @@ export async function obtenerTareas(req, res) {
 
 export async function obtenerTarea(req, res) {
   try {
-    const Id = req.params.id;
-    if (isNaN(Id)) {
+    const id = req.params.id;
+    if (isNaN(id)) {
       return res
         .status(400)
         .json({ message: "La id ingresada debe ser un numero valido" });
     }
-    const tarea = await TasksModel.findOne({ where: { id: Id } });
+    const tarea = await TasksModel.findByPk(id, { include: UsersModel });
     if (!tarea) {
       return res.status(404).json({ message: "Tarea no encontrada" });
     }
@@ -39,7 +40,7 @@ export async function obtenerTarea(req, res) {
 
 export async function crearTarea(req, res) {
   try {
-    const { title, description, isComplete } = req.body;
+    const { title, description, isComplete, userId } = req.body;
     if (
       typeof title !== "string" ||
       title.trim() === "" ||
@@ -75,10 +76,18 @@ export async function crearTarea(req, res) {
         message: "isComplete debe ser un valor booleano",
       });
     }
+
+    const user = await UsersModel.findByPk(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "cada tarea debe tener un usuario valido" });
+    }
     const tareaNueva = await TasksModel.create({
       title: tituloNormalizado,
       description,
       isComplete,
+      userId,
     });
     return res.status(201).json({ ok: true, status: 201, body: tareaNueva });
   } catch (err) {
